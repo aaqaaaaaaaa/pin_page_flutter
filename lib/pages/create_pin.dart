@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test_work_parol_page/pages/shared_pref.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,17 +15,23 @@ class CreatePinPage extends StatefulWidget {
 }
 
 class _CreatePinPageState extends State<CreatePinPage> {
-  // TextEditingController textEditingControllerOne = TextEditingController();
-  // TextEditingController textEditingControllerTwo = TextEditingController();
-  // TextEditingController textEditingControllerThree = TextEditingController();
-  // TextEditingController textEditingControllerFour = TextEditingController();
   int index = 0;
   int reindex = 0;
   late SharedPreferences _prefs;
   static const String kListPref = 'list_pref';
   List listAddPin = [];
   List listPin = [];
+  List get getListValue => listPin;
+  SharedPref prefer =SharedPref();
+@override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance()
+    .then((prefs){
 
+      // _loadListPref();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,12 +286,34 @@ class _CreatePinPageState extends State<CreatePinPage> {
         ],
       );
 
-  Future<Null> _setListPIN(List<String> list) async {
-    await _prefs.setStringList(kListPref, list);
-    _loadListPref();
+  // Future<Null> _setListPIN(List<String> list) async {
+  //   await _prefs.setStringList(kListPref, list);
+  //   _loadListPref();
+  // }
+  //
+  // void _loadListPref() {
+  //   setState(() {
+  //     listPin = _prefs.getStringList(kListPref) ?? [];
+  //
+  //   });
+  // }
+}
+
+class MyInheritedWidget extends InheritedWidget {
+  const MyInheritedWidget({
+    Key? key,
+    required this.myState,
+    required Widget child,
+  }) : super(key: key, child: child);
+  final  _CreatePinPageState myState;
+  static MyInheritedWidget of(BuildContext context) {
+    final MyInheritedWidget? result = context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();
+    assert(result != null, 'No MyInheritedWidget found in context');
+    return result!;
   }
 
-  void _loadListPref() {
-    listPin = _prefs.getStringList(kListPref) ?? [];
+  @override
+  bool updateShouldNotify(MyInheritedWidget oldWidget ) {
+    return myState.getListValue != oldWidget.myState.getListValue;
   }
 }
